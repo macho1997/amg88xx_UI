@@ -1,13 +1,28 @@
 import React, {Component} from 'react';
 import './ReportFrame.css';
 import { Project, Words } from 'arwes';
+import axios from 'axios';
 
 class ReportFrame extends Component {
-    constructor () {
-        super(...arguments);
+    constructor (props) {
+        super(props);
         this.state = {
-            show: true
+            show: false,
+            panelstate: null,
+            temperature: null
          };
+    }
+    updateStatus (){
+        axios
+            .get(
+                'http://localhost:3000/getstatus',
+                { responseType: 'json' },
+            )
+            .then(response => {
+                let statusdata = response.data;
+                console.log(statusdata)
+                this.setState({ panelstate: statusdata.state, temperature:statusdata.temperature });
+            });
     }
     render () {
         return (
@@ -20,7 +35,7 @@ class ReportFrame extends Component {
             >
                 {anim => (
                     <p><Words animate show={anim.entered}>
-                        Dirty panel
+                        Panel state:
                     </Words></p>
                 )}
             </Project>
@@ -29,6 +44,7 @@ class ReportFrame extends Component {
     }
     onToggle () {
         this.setState({ show: !this.state.show });
+        this.updateStatus();
     }
 }
 export default ReportFrame

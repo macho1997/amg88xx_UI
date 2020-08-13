@@ -10,7 +10,7 @@ class PanelImage extends Component {
         this.state = {
             source: null,
             serversource: null,
-            port: '',
+            port: 'localhost:3000',
         };
     
         this.clickMe = this.clickMe.bind(this);
@@ -19,7 +19,7 @@ class PanelImage extends Component {
     componentDidMount(){
         axios
             .get(
-                'http://localhost:3000/requireimage/interstellar1.jpg',
+                `http://${this.state.port}/requireimage/interstellar1.jpg`,
                 { responseType: 'arraybuffer' },
             )
             .then(response => {
@@ -36,7 +36,7 @@ class PanelImage extends Component {
     clickMe(){
         axios
             .get(
-                `${this.state.port}/requireimage/interstellar1.jpg`,
+                `http://${this.state.port}/requireimage/interstellar1.jpg`,
                 { responseType: 'arraybuffer' },
             )
             .then(response => {
