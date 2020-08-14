@@ -31,12 +31,24 @@ const sounds = {
 
 class App extends Component {
 
+  constructor(props) {
+    super(props)
+    this.launchClock()
+  }
+
   accessChild = () => {
     this.refs.showFrame.onToggle()
   };
 
   requestImgFromChild(){
     this.refs.changeImg.clickMe();
+    this.accessChild();
+  }
+
+  launchClock() {
+    setInterval(()=>{
+      this.requestImgFromChild();
+    }, 10000)
   }
 
   render() {
@@ -79,7 +91,7 @@ class App extends Component {
               <Col s={4} offset={['m2']}>
                 <Button animate show onClick={this.accessChild}>
                   <Words animate layer='primary' className='fontnew'>
-                    Show Report
+                    Request Report
                   </Words>
                 </Button>
               </Col>
