@@ -10,14 +10,15 @@ class ReportFrame extends Component {
         this.state = {
             show: true,
             panelstate: null,
-            temperature: null
+            temperature: null,
+            port: ""
          };
     }
 
     componentDidMount (){
         axios
             .get(
-                'http://localhost:3000/getstatus',
+                `http://${this.props.portData2}/getstatus`,
                 { responseType: 'json' },
             )
             .then(response => {
@@ -25,12 +26,13 @@ class ReportFrame extends Component {
                 console.log(statusdata)
                 this.setState({ panelstate: statusdata.status, temperature:statusdata.temperature });
             });
+            
     }
 
     updateStatus (){
         axios
             .get(
-                'http://localhost:3000/getstatus',
+                `http://${this.props.portData2}/getstatus`,
                 { responseType: 'json' },
             )
             .then(response => {
@@ -58,8 +60,9 @@ class ReportFrame extends Component {
         );
     }
     onToggle () {
+        this.setState({ port: this.props.portData2 });
         this.updateStatus();
-        this.accessChild();
+        //this.accessChild();
     }
     accessChild = () => {
         this.refs.showFrame.hitThis()

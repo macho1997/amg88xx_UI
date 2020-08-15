@@ -10,16 +10,17 @@ class PanelImage extends Component {
         this.state = {
             source: null,
             serversource: null,
-            port: 'localhost:3000',
+            port: '',
         };
-    
+        //this.sendData();
         this.clickMe = this.clickMe.bind(this);
     }
 
     componentDidMount(){
+        this.setState({ port: this.props.portData });
         axios
             .get(
-                `http://${this.state.port}/requireimage/interstellar1.jpg`,
+                `http://${this.props.portData}/requireimage/interstellar1.jpg`,
                 { responseType: 'arraybuffer' },
             )
             .then(response => {
@@ -34,9 +35,10 @@ class PanelImage extends Component {
     }
 
     clickMe(){
+        this.setState({ port: this.props.portData });
         axios
             .get(
-                `http://${this.state.port}/requireimage/interstellar1.jpg`,
+                `http://${this.props.portData}/requireimage/interstellar1.jpg`,
                 { responseType: 'arraybuffer' },
             )
             .then(response => {
@@ -50,11 +52,16 @@ class PanelImage extends Component {
             });
     }
 
-    handleInput = (event) => {
+    /*handleInput = (event) => {
         this.setState({
           port: event.target.value
         })
-    }
+        this.sendData();
+    }*/
+
+    /*sendData(){
+        this.props.parentCallback();
+    }*/
 
     render () {
         return (
@@ -62,12 +69,16 @@ class PanelImage extends Component {
                 <Image animate resources={this.state.source} className='fontnew'>
                     Last requested
                 </Image>
+                {/*
                 <form className='fontnew'>
                     <label>
-                      Server: 
-                      <input type="text" value={this.state.port} onChange={this.handleInput}/>
+                    <Words animate layer='alert'>
+                        Server: 
+                    </Words>
+                    <input type="text" value={this.state.port} onChange={this.handleInput.bind(this)}/>
                     </label>
-                  </form>
+                </form>
+                */}
             </div>
         );
     }

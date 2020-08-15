@@ -10,7 +10,6 @@ class RpiReport extends Component {
     }
     render () {
         return (
-            
             <div style={{ padding: '20px', height: '200px' }}>
                 <p>Panel State: {this.props.panelData.panelstate}</p>
                 <p>Panel Temperature: {this.props.panelData.temperature}</p>
@@ -18,7 +17,7 @@ class RpiReport extends Component {
         );
     }
     hitThis () {
-        console.log(this.props.panelData.panelstate)
+        
     }
 }
 export default RpiReport
