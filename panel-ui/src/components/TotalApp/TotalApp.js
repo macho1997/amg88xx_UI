@@ -6,6 +6,8 @@ import ReportFrame from '../ReportFrame/ReportFrame';
 import PanelImage from '../PanelImage/PanelImage';
 
 import chemicalWeapon from '@iconify/icons-mdi/chemical-weapon';
+import mdiRobot from '@iconify/icons-mdi/robot';
+import axios from 'axios';
 
 class TotalApp extends Component {
 
@@ -14,33 +16,52 @@ class TotalApp extends Component {
         this.state = {
             serverinput: false,
             port: null,
-            time: 10
+            time: 10,
+            autocontrol: false,
+            controlState: "Manual"
         }
-        this.mainClockControl().bind(this);
+        //this.mainClockControl().bind(this);
     }
 
     
     // Functions for scheduling requests //
     mainClockControl(){
-        const interval = setInterval(() => {
+        if(!this.state.port){
+            alert("Server input empty. Please enter a server ip and port")
+            return
+        }
+        this.setState({
+            autocontrol: true,
+            controlState: "Automatic"
+        })
+        this.interval = setInterval(() => {
             this.excecutePythonThermalCamera()
-        }, 5200);
-        return () => clearInterval(interval);
+        }, 4000);
     }
 
     excecutePythonThermalCamera(){
-        const timer = setTimeout(() => {
-            console.log("Hola perros")
-            this.excecutePythonOpenCV();
-        }, 2000);
-        return () => {
-            clearTimeout(timer);
-        }
+        axios
+            .get(
+                `http://${this.state.port}/excecutethermalcam`
+            )
+            .then(response => {
+                let statusdata = response.data;
+                console.log(statusdata)
+            });
+
+        this.excecutePythonOpenCV();
     }
 
     excecutePythonOpenCV(){
         const timer2 = setTimeout(() => {
-            console.log("Hola perros 2")
+            axios
+            .get(
+                `http://${this.state.port}/excecuteopencv`
+            )
+            .then(response => {
+                let statusdata = response.data;
+                console.log(statusdata)
+            });
             this.fetchRpiData()
         }, 2000);
         return () => {
@@ -50,17 +71,39 @@ class TotalApp extends Component {
 
     fetchRpiData(){
         const timer3 = setTimeout(() => {
-            console.log("Hola perros 3")
+            console.log(`Puerto: ${this.state.port}`)
             this.requestImgFromChild();
-        }, 1000);
+        }, 2000);
         return () => {
             clearTimeout(timer3);
         }
     }
 
+    stopSystemClock(){
+        if (!this.state.autocontrol){
+            alert("Cannot stop uninitialized automatic process");
+            return
+        }
+        this.setState({
+            autocontrol: false,
+            controlState: "Manual"
+        })
+        clearInterval(this.interval)
+    }
+
+    // --------------------------------------------- //
+
+    // --------------   Requests   ----------------- //
+
+    
+
     // --------------------------------------------- //
 
     requestImgFromChild(){
+        if(!this.state.port){
+            alert("Server input empty. Please enter a server ip and port")
+            return
+        }
         //this.refs.changeImg.sendData();
         this.refs.changeImg.clickMe();
         this.accessChild();
@@ -68,18 +111,6 @@ class TotalApp extends Component {
     accessChild = () => {
         this.refs.showFrame.onToggle()
     };
-    
-      /*launchClock() {
-        setInterval(()=>{
-          this.requestImgFromChild();
-        }, 10000)
-      }*/
-    
-    /*callbackFunction(childData){
-        this.setState({port: childData})
-        //this.refs.showFrame.getPort();
-        this.prueba();
-    }*/
 
     handleInputServer = (event) => {
         this.setState({
@@ -88,10 +119,13 @@ class TotalApp extends Component {
     }
 
     render () {
-        console.log(this.state.time)
+        var controlStatus = this.state.controlState;
         return (
             <div>
                 <Row>
+                <Col s={10}>
+                    <Words animate layer='success' className='fontnew'> Control: </Words> <p className='fontnew'>{controlStatus}</p>
+                </Col>
                 <Col s={12}>
                     <Row nested noMargin>
                     <Col s={6}>
@@ -108,12 +142,30 @@ class TotalApp extends Component {
                 <Row>
                 <Col s={12}>
                     <Row nested noMargin>
-                    <Col s={4} offset={['m5']} >
-                        <Button onClick={this.requestImgFromChild.bind(this)} animate layer='success' className='fontnew'>
+                    <Col s={4} offset={['m2']} >
+                        <Button onClick={this.excecutePythonThermalCamera.bind(this)} animate className='fontnew'>
+                            <Icon icon={chemicalWeapon} />
+                            {' '}
+                            <Words animate className='fontnew'>
+                            Request Data
+                            </Words>
+                        </Button>
+                    </Col>
+                    <Col s={2} offset={['m1']}>
+                        <Button onClick={this.mainClockControl.bind(this)} animate layer='success' className='fontnew'>
                             <Icon icon={chemicalWeapon} />
                             {' '}
                             <Words animate layer='success' className='fontnew'>
-                            Request Data
+                            Start Automatic Control
+                            </Words>
+                        </Button>
+                    </Col>
+                    <Col s={2} >
+                        <Button onClick={this.stopSystemClock.bind(this)} animate layer='alert' className='fontnew'>
+                            <Icon icon={mdiRobot} />
+                            {' '}
+                            <Words animate layer='alert' className='fontnew'>
+                            Stop Automatic Control
                             </Words>
                         </Button>
                     </Col>
@@ -127,17 +179,22 @@ class TotalApp extends Component {
                         </Col>
                     */}
                     </Row>
+                    <Row>
+                        <Col s={6} offset={['m4']}>
+                            <form className='fontnew'>
+                                <label>
+                                <Words animate layer='primary'>
+                                    Server: 
+                                </Words>
+                                {' '}
+                                <input type="text" onChange={this.handleInputServer.bind(this)}/>
+                                </label>
+                            </form>
+                        </Col>
+                    </Row>
                 </Col>
                 </Row>
-                <form className='fontnew'>
-                    <label>
-                    <Words animate layer='primary'>
-                        Server: 
-                    </Words>
-                    {' '}
-                    <input type="text" onChange={this.handleInputServer.bind(this)}/>
-                    </label>
-                </form>
+                
             </div>
         );
     }

@@ -20,7 +20,7 @@ class PanelImage extends Component {
         this.setState({ port: this.props.portData });
         axios
             .get(
-                `http://${this.props.portData}/requireimage/interstellar1.jpg`,
+                `http://${this.props.portData}/requireimage/panelfinal.jpg`,
                 { responseType: 'arraybuffer' },
             )
             .then(response => {
@@ -38,7 +38,7 @@ class PanelImage extends Component {
         this.setState({ port: this.props.portData });
         axios
             .get(
-                `http://${this.props.portData}/requireimage/interstellar1.jpg`,
+                `http://${this.props.portData}/requireimage/panelfinal.jpg`,
                 { responseType: 'arraybuffer' },
             )
             .then(response => {
@@ -69,16 +69,6 @@ class PanelImage extends Component {
                 <Image animate resources={this.state.source} className='fontnew'>
                     Last requested
                 </Image>
-                {/*
-                <form className='fontnew'>
-                    <label>
-                    <Words animate layer='alert'>
-                        Server: 
-                    </Words>
-                    <input type="text" value={this.state.port} onChange={this.handleInput.bind(this)}/>
-                    </label>
-                </form>
-                */}
             </div>
         );
     }

@@ -64,8 +64,5 @@ class ReportFrame extends Component {
         this.updateStatus();
         //this.accessChild();
     }
-    accessChild = () => {
-        this.refs.showFrame.hitThis()
-    };
 }
 export default ReportFrame

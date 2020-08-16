@@ -20,25 +20,28 @@ app.get("/getstatus", (req, res) => {
     });
   });
 
-app.get("/execute", (req, res) => {
+app.get("/excecutethermalcam", () => {
 
-  var dataToSend;
   // spawn new child process to call the python script
-  const python = spawn('python3', ['hola.py']);
-  // collect data from script
-  python.stdout.on('data', function (data) {
-   console.log('Pipe data from python script ...');
-   dataToSend = data.toString();
-  });
+  const python = spawn('python3', ['captura.py']);
   // in close event we are sure that stream from child process is closed
   python.on('close', (code) => {
-  console.log(`child process close all stdio with code ${code}`);
-  // send data to browser
-  res.send(dataToSend)
+    console.log(`child process close all stdio with code ${code}`);
+  });
+
+});
+
+app.get("/excecuteopencv", () => {
+
+  // spawn new child process to call the python script
+  const python = spawn('python3', ['hotspot.py']);
+  // in close event we are sure that stream from child process is closed
+  python.on('close', (code) => {
+    console.log(`child process close all stdio with code ${code}`);
   });
 
 });
 
 app.listen(3000, () => {
     console.log("Server listening on 3000");
-})
+});

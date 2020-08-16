@@ -35,7 +35,7 @@ class App extends Component {
         <SoundsProvider sounds={createSounds(sounds)}>
           <div style={{ padding: 20 }}>
               <Header animate>
-                  <h1 style={{ margin: 0 }} className='fontnew'>Solar Panels Hot Points System Detection</h1>
+                  <h1 style={{ margin: 0 }} className='fontnew'>Solar Panel Hot Points System Detection</h1>
               </Header>
           </div>
           <TotalApp />
